@@ -24,27 +24,26 @@ profileImages.forEach(img => {
     img.addEventListener("click", () => { 
         // Update the selected image
         selectedImage = img.src;
-        console.log("Selected Image:", selectedImage); // Debugging: Log selected image to console
-
-        // Reset the border for all images
-        profileImages.forEach(i => i.style.border = "3px solid #6a4e1e");
-
-        // Highlight the selected image
-        img.style.border = "3px solid #ffd700";
+        // Debugging: Log selected image to console
+        console.log("Selected Image:", selectedImage); 
+       
+    profileImages.forEach(i => i.style.border = "3px solid #6a4e1e");
+   img.style.border = "3px solid #ffd700";
     });
 });
 
-//  Ensure "Make character" button only gets one event listener
 createCharacterBtn.addEventListener("click", () => {
-    // Create a character object with input values
+   
     const character = {
-        name: characterNameInput.value.trim(), // Get and trim the character name
-        hp: parseInt(characterHpInput.value) || 100, // Default HP is 100 if input is empty
-        attack: parseInt(characterAttackInput.value) || 20, // Default attack is 20 if input is empty
-        image: selectedImage // Store the selected profile image
+        name: characterNameInput.value.trim(), 
+         // Default HP is 100 if input is empty
+        hp: parseInt(characterHpInput.value) || 100, 
+        // Default attack is 20 if input is empty
+        attack: parseInt(characterAttackInput.value) || 20, 
+        image: selectedImage 
     };
 
-    //  Validation: Ensure a name and profile picture are selected
+    // Ensures a name and profile picture are selected
     if (!character.name || !character.image) {
         alert("You must choose a name and profile picture");
         return;
@@ -52,7 +51,7 @@ createCharacterBtn.addEventListener("click", () => {
 
     //  Save the character to localStorage
     localStorage.setItem("character", JSON.stringify(character));
-    alert("Character saved!"); // Confirm to the user
+    alert("Character saved!"); 
 });
 
 //Seksjon 2: Generer fiende
@@ -64,7 +63,10 @@ const enemyTypes = [
 ];
 
 generateEnemyBtn.addEventListener("click", () => {
+
+    // Selects a random enemy from the enemyTypes array
     const randomEnemy = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+     // Creates an enemy object with randomly generated stats
     const enemy = {
         name: randomEnemy.name,
         hp: Math.floor(Math.random() * (150 - 50 + 1)) + 50,

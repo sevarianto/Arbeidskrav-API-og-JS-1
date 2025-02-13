@@ -1,4 +1,4 @@
-// game.js - Handles game logic (separate from UI)
+// game.js - Handles game logic (separate from UI) Jest test data
 
 // Create a character object
 function createCharacter(name, hp, attack, image) {

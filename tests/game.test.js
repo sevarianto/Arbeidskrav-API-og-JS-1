@@ -1,7 +1,7 @@
 // Her kan du skrive testene dine
 const { createCharacter, generateEnemy, fight } = require("../game");
 
-// Test Hero
+// Test Character
 test("Character should be created with correct attributes", () => {
     const hero = createCharacter("Test Hero", 120, 30, "hero.jpg");
     expect(hero.name).toBe("Test Hero");

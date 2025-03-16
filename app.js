@@ -1,155 +1,177 @@
 //Her kommer din Javascript-kode. Kommentarene er lagt til for å hjelpe deg med å dele opp oppgavene,
 // du kan slette disse hvis du ønsker.
-const characterNameInput = document.getElementById("character-name")
-const characterHpInput = document.getElementById("character-hp")
-const characterAttackInput = document.getElementById("attack-damage")
-const profileImages = document.querySelectorAll(".profile-img")
-const createCharacterBtn = document.getElementById("create-character")
-const generateEnemyBtn = document.getElementById("generate-enemy")
-const enemyDisplay = document.getElementById("enemy-display")
-const enemyImg = document.getElementById("enemy-img")
-const enemyName = document.getElementById("enemy-name")
-const enemyHp  = document.getElementById("enemy-hp")
-const enemyAttack = document.getElementById("enemy-attack")
-const startFightBtn = document.getElementById("start-fight")
-const battleResult = document.getElementById("battle-result")
-
-// Del 1: Lag karakter og lagre karakteren i localStorage
-
-// Stores the selected profile image
-let selectedImage = ""; 
-
-// Allow the user to choose a profile picture
-profileImages.forEach(img => {
-    img.addEventListener("click", () => { 
-        // Update the selected image
-        selectedImage = img.src;
-        // Debugging: Log selected image to console
-        console.log("Selected Image:", selectedImage); 
-       
-    profileImages.forEach(i => i.style.border = "3px solid #6a4e1e");
-   img.style.border = "3px solid #ffd700";
-    });
-});
-
-createCharacterBtn.addEventListener("click", () => {
-   
-    const character = {
-        name: characterNameInput.value.trim(), 
-         // Default HP is 100 if input is empty
-        hp: parseInt(characterHpInput.value) || 100, 
-        // Default attack is 20 if input is empty
-        attack: parseInt(characterAttackInput.value) || 20, 
-        image: selectedImage 
-    };
-
-    // Ensures a name and profile picture are selected
-    if (!character.name || !character.image) {
-        alert("You must choose a name and profile picture");
-        return;
-    }
-
-    //  Save the character to localStorage
-    localStorage.setItem("character", JSON.stringify(character));
-    alert("Character saved!"); 
-});
-
-//Seksjon 2: Generer fiende
-
-const enemyTypes = [
-    { name: "Swamp Monster", img: "assets/swamp-monster.jpg" },
-    { name: "Monster", img: "assets/monster.jpg" },
-    { name: "Dragon", img: "assets/dragon.jpg" }
-];
-
-generateEnemyBtn.addEventListener("click", () => {
-
-    // Selects a random enemy from the enemyTypes array
-    const randomEnemy = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
-     // Creates an enemy object with randomly generated stats
-    const enemy = {
-        name: randomEnemy.name,
-        hp: Math.floor(Math.random() * (150 - 50 + 1)) + 50,
-        attack: Math.floor(Math.random() * (40 - 10 + 1)) + 10,
-        image: randomEnemy.img
-    };
-
-    localStorage.setItem("enemy", JSON.stringify(enemy));
-    displayEnemy(enemy);
-});
-
-function displayEnemy(enemy) {
-    enemyImg.src = enemy.image;
-    enemyName.textContent = `Name: ${enemy.name}`;
-    enemyHp.textContent = `HP: ${enemy.hp}`;
-    enemyAttack.textContent = `Attack: ${enemy.attack}`;
-}
-
-// Seksjon 3: Sloss!
-
-startFightBtn.addEventListener("click", () => {
-    const character = JSON.parse(localStorage.getItem("character"));
-    const enemy = JSON.parse(localStorage.getItem("enemy"));
-
-    if (!character || !enemy) {
-        alert("Both a character and an enemy must be selected!");
-        return;
-    }
-
-    const finalCharacterHp = character.hp - enemy.attack;
-    const finalEnemyHp = enemy.hp - character.attack;
-
-    let resultText = "";
-    if (finalCharacterHp > finalEnemyHp) {
-        resultText = "You won!";
-    } else if (finalEnemyHp > finalCharacterHp) {
-        resultText = "You lost!";
-    } else {
-        resultText = "It's a draw!";
-    }
-
-    displayBattle(character, enemy);
-    battleResult.textContent = resultText;
-});
-
-// Shows the character and enemy in the arena
-function displayBattle(character, enemy) {
-    const battleArea = document.getElementById("battle-area");
-
-    document.getElementById("character-display")?.remove();
-    document.getElementById("enemy-fight-display")?.remove();
-
-    const charDiv = document.createElement("div");
-    charDiv.id = "character-display";
-    charDiv.classList.add("profile-card");
-    charDiv.innerHTML = `
-        <h2>Hero</h2>
-        <img src="${character.image}" alt="Profile picture" />
-        <p>${character.name}</p>
-        <p>HP: ${character.hp}</p>
-        <p>Attack: ${character.attack}</p>
-    `;
-    battleArea.appendChild(charDiv);
-
-    const enemyDiv = document.createElement("div");
-    enemyDiv.id = "enemy-fight-display";
-    enemyDiv.classList.add("profile-card");
-    enemyDiv.innerHTML = `
-        <h2>Enemy</h2>
-        <img src="${enemy.image}" alt="Enemy profile picture" />
-        <p>${enemy.name}</p>
-        <p>HP: ${enemy.hp}</p>
-        <p>Attack: ${enemy.attack}</p>
-    `;
-    battleArea.appendChild(enemyDiv);
-}
-//Du skal vise frem helten og fienden. Se HTML-dokumentet for hvordan fremvisningen skal se ut, med tanke på hvilke tagger, hierarki og hvilke klasser de skal ha.
-//Du skal lage den strukturen som vist i HTML, her i Javascript og legge de til i div'en "battle-arena" fra HTML.
-
-// Reload data when refresh
 document.addEventListener("DOMContentLoaded", () => {
-    const savedCharacter = JSON.parse(localStorage.getItem("character"));
-    const savedEnemy = JSON.parse(localStorage.getItem("enemy"));
+    const characterNameInput = document.getElementById("character-name");
+    const characterHpInput = document.getElementById("character-hp");
+    const characterAttackInput = document.getElementById("attack-damage");
+    const profileImages = document.querySelectorAll(".profile-img");
+    const createCharacterBtn = document.getElementById("create-character");
+    const generateEnemyBtn = document.getElementById("generate-enemy");
+    const enemyImg = document.getElementById("enemy-img");
+    const enemyName = document.getElementById("enemy-name");
+    const enemyHp  = document.getElementById("enemy-hp");
+    const enemyAttack = document.getElementById("enemy-attack");
+    const startFightBtn = document.getElementById("start-fight");
+    const battleResult = document.getElementById("battle-result");
+    const battleArea = document.getElementById("battle-area"); 
 
-    if (savedEnemy) displayEnemy(savedEnemy);
+    // Del 1: Lag karakter og lagre karakteren i localStorage
+
+    // Lagrer valgt profilbilde
+    let selectedImage = ""; 
+
+    // Definerer unike stats for hver karakterklasse
+    const characterStats = {
+        "mage.webp": { hp: 100, attack: 25 },
+        "death-knight.jpeg": { hp: 100, attack: 30 },
+        "hunter.jpg": { hp: 100, attack: 35 }
+    };
+
+    // Tillater brukeren å velge et profilbilde
+    profileImages.forEach(img => {
+        img.addEventListener("click", () => { 
+            selectedImage = img.src;
+            const imageName = img.src.split("/").pop(); 
+            
+            // Oppdater HP og attack basert på valgt klasse
+            if (characterStats[imageName]) {
+                characterHpInput.value = characterStats[imageName].hp;
+                characterAttackInput.value = characterStats[imageName].attack;
+            }
+
+            profileImages.forEach(i => i.style.border = "3px solid #6a4e1e");
+            img.style.border = "3px solid #ffd700";
+        });
+    });
+
+    // Oppretter en karakter og lagrer i localStorage
+    createCharacterBtn.addEventListener("click", () => {
+        // Debugging
+        console.log("Create Character button clicked!"); 
+
+        const character = {
+            name: characterNameInput.value.trim(), 
+            hp: parseInt(characterHpInput.value) || 100, 
+            attack: parseInt(characterAttackInput.value) || 20, 
+            image: selectedImage 
+        };
+
+        // Sørger for at navn og profilbilde er valgt
+        if (!character.name || !character.image) {
+            alert("You must choose a name and profile picture");
+            return;
+        }
+
+        // Lagrer karakteren i localStorage
+        localStorage.setItem("character", JSON.stringify(character));
+        alert("Character saved!");
+    });
+
+    // Seksjon 2: Generer fiende
+
+    const enemyTypes = [
+        { name: "Swamp Monster", img: "assets/swamp-monster.jpg" },
+        { name: "Monster", img: "assets/monster.jpg" },
+        { name: "Dragon", img: "assets/dragon.jpg" }
+    ];
+
+    // Genererer en tilfeldig fiende
+    generateEnemyBtn.addEventListener("click", () => {
+        // Debugging
+        console.log("Generate Enemy button clicked!"); 
+
+        const randomEnemy = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+        const enemy = {
+            name: randomEnemy.name,
+            hp: Math.floor(Math.random() * (150 - 50 + 1)) + 50,
+            attack: Math.floor(Math.random() * (40 - 10 + 1)) + 10,
+            image: randomEnemy.img
+        };
+
+        // Lagrer fienden i localStorage og viser den
+        localStorage.setItem("enemy", JSON.stringify(enemy));
+        displayEnemy(enemy);
+    });
+
+    // Viser fienden på skjermen
+    function displayEnemy(enemy) {
+        enemyImg.src = enemy.image;
+        enemyName.textContent = `Name: ${enemy.name}`;
+        enemyHp.textContent = `HP: ${enemy.hp}`;
+        enemyAttack.textContent = `Attack: ${enemy.attack}`;
+    }
+
+    // Seksjon 3: Sloss!
+
+    // Starter en kamp mellom karakter og fiende
+    startFightBtn.addEventListener("click", () => {
+        // Debugging
+        console.log("Fight button clicked!"); 
+
+        const character = JSON.parse(localStorage.getItem("character"));
+        const enemy = JSON.parse(localStorage.getItem("enemy"));
+
+        // Sørger for at både karakter og fiende er valgt
+        if (!character || !enemy) {
+            alert("Both a character and an enemy must be selected!");
+            return;
+        }
+
+        // Beregner kampresultat
+        const finalCharacterHp = character.hp - enemy.attack;
+        const finalEnemyHp = enemy.hp - character.attack;
+
+        let resultText = "";
+        if (finalCharacterHp > finalEnemyHp) {
+            resultText = "You won!";
+        } else if (finalEnemyHp > finalCharacterHp) {
+            resultText = "You lost!";
+        } else {
+            resultText = "It's a draw!";
+        }
+         // Show battle details again
+        displayBattle(character, enemy); 
+        battleResult.textContent = resultText;
+    });
+
+    // Displays both the character and the enemy in battle 
+    function displayBattle(character, enemy) {
+        // Remove any existing battle displays
+        document.getElementById("character-display")?.remove();
+        document.getElementById("enemy-fight-display")?.remove();
+
+        // Create the character's battle dispay
+        const charDiv = document.createElement("div");
+        charDiv.id = "character-display";
+        charDiv.classList.add("profile-card");
+        charDiv.innerHTML = `
+            <h2>Hero</h2>
+            <img src="${character.image}" alt="Profile card" />
+            <p><strong>Name:</strong> ${character.name}</p>
+            <p><strong>HP:</strong> ${character.hp}</p>
+            <p><strong>Attack power:</strong> ${character.attack}</p>
+        `;
+        battleArea.appendChild(charDiv);
+
+        // Create the enemy's battle display
+        const enemyDiv = document.createElement("div");
+        enemyDiv.id = "enemy-fight-display";
+        enemyDiv.classList.add("profile-card");
+        enemyDiv.innerHTML = `
+            <h2>Enemy</h2>
+            <img src="${enemy.image}" alt="Enemy profile card" />
+            <p><strong>Name:</strong> ${enemy.name}</p>
+            <p><strong>HP:</strong> ${enemy.hp}</p>
+            <p><strong>Attack power:</strong> ${enemy.attack}</p>
+        `;
+        battleArea.appendChild(enemyDiv);
+    }
+
+    // Reloads Localdata when refreshing
+    document.addEventListener("DOMContentLoaded", () => {
+        const savedCharacter = JSON.parse(localStorage.getItem("character"));
+        const savedEnemy = JSON.parse(localStorage.getItem("enemy"));
+
+        if (savedEnemy) displayEnemy(savedEnemy);
+    });
 });

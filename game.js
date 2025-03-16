@@ -17,8 +17,10 @@ function generateEnemy() {
 
     return {
         name: randomEnemy.name,
-        hp: Math.floor(Math.random() * (150 - 50 + 1)) + 50, // Random HP (50-150)
-        attack: Math.floor(Math.random() * (40 - 10 + 1)) + 10, // Random Attack (10-40)
+        // Random HP (50-150)
+        hp: Math.floor(Math.random() * (150 - 50 + 1)) + 50, 
+        // Random Attack (10-40)
+        attack: Math.floor(Math.random() * (40 - 10 + 1)) + 10, 
         image: randomEnemy.img
     };
 }
